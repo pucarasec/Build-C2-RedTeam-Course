@@ -10,7 +10,6 @@ class ListeningPost
 {
     public:
     ListeningPost(const char *hostname, int port, const char *userAgent);
-
     string getData();
 
     private:

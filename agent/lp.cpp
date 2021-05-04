@@ -8,7 +8,7 @@
 #include <windows.h>
 #include <winhttp.h>
 
-ListeningPost::ListeningPost(const char *hostname, int port, const char * userAgent) 
+ListeningPost::ListeningPost(const char *hostname, int port, const char *userAgent) 
 {
     this->hostname = wstring_convert<codecvt_utf8_utf16<wchar_t>>().from_bytes(hostname);
     this->port = port;
