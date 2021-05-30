@@ -1,51 +1,28 @@
 package main
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/hmac"
-	"crypto/rand"
-	"crypto/sha256"
-	"encoding/base64"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
+
+	"../crypto/dh"
+	"./comm/layer0"
+	"./comm/layer1"
 )
 
-func encryptMessage(message []byte, key []byte) []byte {
-	block, _ := aes.NewCipher(key)
-	encrypted := make([]byte, aes.BlockSize+len(message))
-	iv := encrypted[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		panic(err)
-	}
+type AppHandler struct{}
 
-	data := encrypted[aes.BlockSize:]
-	stream := cipher.NewOFB(block, iv)
-	stream.XORKeyStream(data, message)
-	return encrypted
-}
-
-func signMessage(message []byte, key []byte) []byte {
-	mac := hmac.New(sha256.New, key)
-	mac.Write(message)
-	signed := make([]byte, len(message)+mac.Size())
-	copy(signed[:mac.Size()], mac.Sum((nil)))
-	copy(signed[mac.Size():], message)
-	return signed
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	key := []byte("some random key!")
-
-	message := []byte("Hi Agent, I'm a Listening Post")
-	encoded := base64.StdEncoding.EncodeToString(signMessage(encryptMessage(message, key), key))
-
-	fmt.Fprintf(w, "<html><body>Hi there, this is a totally innocent web page. <!--%s--></body></html>", encoded)
+func (h *AppHandler) HandleAuthenticatedMsg(clientID []byte, msg []byte) ([]byte, error) {
+	response := fmt.Sprintf("Your message was: %s", msg)
+	return []byte(response), nil
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	key := []byte("some random key!")
+	appHandler := &AppHandler{}
+	dhHandler := layer1.NewDHHandler(layer1.NewBasicKeyRespository(), dh.NewKeyExchange(), appHandler)
+	encryptedHandler := layer0.NewEncryptedHandler(key, dhHandler)
+	handler := layer0.NewHTTPHandler(encryptedHandler)
+	http.Handle("/", handler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
