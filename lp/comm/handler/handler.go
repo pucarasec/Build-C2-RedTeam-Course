@@ -5,5 +5,5 @@ type Handler interface {
 }
 
 type AuthenticatedHandler interface {
-	HandleAuthenticatedMsg(clientID []byte, msg []byte) ([]byte, error)
+	HandleAuthenticatedMsg(clientID string, msg []byte) ([]byte, error)
 }

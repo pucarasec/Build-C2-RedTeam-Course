@@ -1,9 +1,21 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Agent struct {
 	gorm.Model
-	UUID      string `json:"uuid" gorm:"primary_key"`
-	SharedKey []byte `json:"shared_key"`
+	Id        string    `json:"id" gorm:"primary_key"`
+	FirstSeen time.Time `json:"first_seen"`
+	LastSeen  time.Time `json:"last_seen"`
+}
+
+type Message struct {
+	gorm.Model
+	AgentId string
+	Agent   Agent
+	Text    string
 }

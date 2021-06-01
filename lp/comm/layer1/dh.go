@@ -1,6 +1,8 @@
 package layer1
 
 import (
+	"encoding/hex"
+
 	"../../../crypto/dh"
 	"../../../crypto/sym"
 	"../../../protocol"
@@ -49,7 +51,7 @@ func (h *DHHandler) HandleMsg(msg []byte) ([]byte, error) {
 }
 
 func (h *DHHandler) handleHandshakeMsg(msg *protocol.HandshakeMsg) (*protocol.BaseMsg, error) {
-	clientID := dh.GetClientID(msg.PublicKey)
+	clientID := hex.EncodeToString(dh.GetClientID(msg.PublicKey))
 	err := h.keyRepository.Set(clientID, msg.PublicKey)
 	if err != nil {
 		return nil, err
@@ -65,7 +67,8 @@ func (h *DHHandler) handleHandshakeMsg(msg *protocol.HandshakeMsg) (*protocol.Ba
 }
 
 func (h *DHHandler) handleClientMsg(msg *protocol.ClientMsg) (*protocol.BaseMsg, error) {
-	publicKey, err := h.keyRepository.Get(msg.ClientID)
+	clientID := hex.EncodeToString(msg.ClientID)
+	publicKey, err := h.keyRepository.Get(clientID)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +93,7 @@ func (h *DHHandler) handleClientMsg(msg *protocol.ClientMsg) (*protocol.BaseMsg,
 		return nil, err
 	}
 
-	response, err := h.subhandler.HandleAuthenticatedMsg(msg.ClientID, decryptedPayload)
+	response, err := h.subhandler.HandleAuthenticatedMsg(clientID, decryptedPayload)
 	if err != nil {
 		return nil, err
 	}

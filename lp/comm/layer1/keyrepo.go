@@ -1,8 +1,8 @@
 package layer1
 
 type KeyRepository interface {
-	Set(clientID []byte, publicKey []byte) error
-	Get(clientID []byte) ([]byte, error)
+	Set(clientID string, publicKey []byte) error
+	Get(clientID string) ([]byte, error)
 }
 
 type BasicKeyRepository struct {
@@ -15,12 +15,12 @@ func NewBasicKeyRespository() *BasicKeyRepository {
 	}
 }
 
-func (r *BasicKeyRepository) Set(clientID []byte, publicKey []byte) error {
-	r.keys[string(clientID)] = publicKey
+func (r *BasicKeyRepository) Set(clientID string, publicKey []byte) error {
+	r.keys[clientID] = publicKey
 	return nil
 }
 
-func (r *BasicKeyRepository) Get(clientID []byte) ([]byte, error) {
-	publicKey := r.keys[string(clientID)]
+func (r *BasicKeyRepository) Get(clientID string) ([]byte, error) {
+	publicKey := r.keys[clientID]
 	return publicKey, nil
 }
