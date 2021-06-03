@@ -17,7 +17,8 @@ func GetDB() *gorm.DB {
 		}
 
 		db.AutoMigrate(&Agent{})
-		db.AutoMigrate(&Message{})
+		db.AutoMigrate(&Command{})
+		db.AutoMigrate(&CommandResult{})
 
 	}
 	return db

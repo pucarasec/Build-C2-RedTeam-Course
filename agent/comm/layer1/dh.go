@@ -5,7 +5,7 @@ import (
 
 	"../../../crypto/dh"
 	"../../../crypto/sym"
-	"../../../protocol"
+	protocol "../../../protocol/base"
 	"../client"
 	"google.golang.org/protobuf/proto"
 )

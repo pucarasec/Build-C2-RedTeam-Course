@@ -1,0 +1,43 @@
+syntax = "proto3";
+option go_package = "/protocol/app";
+
+
+
+message Command {
+    uint64 id = 1;
+    repeated string args = 2;
+    bytes input = 3;
+}
+
+message CommandResult {
+    uint64 commandId = 1;
+    bytes output = 2;
+}
+
+message CommandListMsg {
+    repeated Command commands = 1;
+}
+
+message CommandResultListMsg {
+    repeated CommandResult commandResults = 1;
+}
+
+message GetCommandListMsg {
+    uint64 lastId = 1;
+}
+
+message AgentMsg {
+    oneof MsgType {
+        CommandResultListMsg CommandResultListMsg = 1;
+        GetCommandListMsg GetCommandListMsg = 2;
+    }
+}
+
+message SuccessMsg {}
+
+message LPMsg {
+    oneof MsgType {
+        SuccessMsg SuccessMsg = 1;
+        CommandListMsg CommandListMsg = 2;
+    }
+}
