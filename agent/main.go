@@ -58,13 +58,11 @@ func (a *Agent) heartbeat() {
 	}
 	lpMsg, err := a.sendMsg(agentMsg)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
 		return
 	}
 	if commandListMsg := lpMsg.GetCommandListMsg(); commandListMsg != nil {
 		var commandResults []*protocol.CommandResult
 		for _, cmd := range commandListMsg.GetCommands() {
-			fmt.Printf("Run command: %s %s\n", cmd.Args)
 			cmdResult := &protocol.CommandResult{
 				CommandId: cmd.GetId(),
 				Output:    a.runCommand(cmd.Args, cmd.Input),
@@ -82,11 +80,8 @@ func (a *Agent) heartbeat() {
 				},
 			},
 		}
-		_, err := a.sendMsg(agentMsg)
-		if err != nil {
-			fmt.Printf("Error reporting results: %s\n", err)
-			return
-		}
+
+		a.sendMsg(agentMsg)
 	}
 }
 
