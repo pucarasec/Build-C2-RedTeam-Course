@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strings"
 	"time"
 
 	"../crypto/dh"
@@ -17,6 +14,8 @@ import (
 	"./models"
 	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
+
+	"./admin"
 )
 
 type AppHandler struct {
@@ -37,7 +36,11 @@ func (h *AppHandler) handleGetCommandListMsg(
 	var commands []models.Command
 	var commandList []*protocol.Command
 
-	tx := h.db.Where("id > ?", msg.LastId).Order("id asc").Find(&commands)
+	tx := h.db.
+		Where("agent_id = ?", agent.ID).
+		Where("id > ?", msg.LastId).
+		Order("id asc").
+		Find(&commands)
 
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -69,7 +72,6 @@ func (h *AppHandler) handleCommandResultListMsg(
 ) (*protocol.LPMsg, error) {
 
 	for _, cmdResult := range msg.GetCommandResults() {
-		fmt.Printf("%s: %s", agent.ID, cmdResult.Output)
 		h.db.Create(&models.CommandResult{
 			CommandId: uint(cmdResult.CommandId),
 			AgentId:   agent.ID,
@@ -104,9 +106,8 @@ func (h *AppHandler) HandleAuthenticatedMsg(clientId string, msg []byte) ([]byte
 	var agentMsg protocol.AgentMsg
 
 	h.db.FirstOrCreate(&agent, models.Agent{ID: clientId})
-	if agent.FirstSeen.IsZero() {
+	if agent.LastSeenAt.IsZero() {
 		fmt.Printf("Agent %s reported in\n", agent.ID)
-		agent.FirstSeen = time.Now()
 	}
 
 	err := proto.Unmarshal(msg, &agentMsg)
@@ -124,32 +125,11 @@ func (h *AppHandler) HandleAuthenticatedMsg(clientId string, msg []byte) ([]byte
 		return nil, err
 	}
 
-	agent.LastSeen = time.Now()
+	agent.LastSeenAt = time.Now()
 
 	h.db.Save(&agent)
 
 	return []byte(response), nil
-}
-
-func readFromTerminal(db *gorm.DB) {
-	reader := bufio.NewReader(os.Stdin)
-
-	for {
-		text, _ := reader.ReadString('\n')
-		fields := strings.Split(text[:len(text)-1], " ")
-		cmdArgs, err := json.Marshal(fields)
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			continue
-		}
-		tx := db.Create(&models.Command{
-			Args: cmdArgs,
-		})
-		if tx.Error != nil {
-			fmt.Printf("Error: %s\n", tx.Error)
-			continue
-		}
-	}
 }
 
 func main() {
@@ -160,6 +140,9 @@ func main() {
 	encryptedHandler := layer0.NewEncryptedHandler(key, dhHandler)
 	handler := layer0.NewHTTPHandler(encryptedHandler)
 	http.Handle("/", handler)
-	go readFromTerminal(db)
+
+	adminHandler := admin.NewAdminHandler("/admin", db)
+	http.Handle("/admin/", adminHandler)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

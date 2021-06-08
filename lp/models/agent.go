@@ -8,21 +8,24 @@ import (
 
 type Agent struct {
 	gorm.Model
-	ID        string    `json:"id" gorm:"primary_key"`
-	FirstSeen time.Time `json:"first_seen"`
-	LastSeen  time.Time `json:"last_seen"`
+	ID         string    `json:"ID" gorm:"primary_key"`
+	LastSeenAt time.Time `json:"LastSeenAt"`
+	Commands   []Command
 }
 
 type Command struct {
 	gorm.Model
-	Args  []byte `json:"args"`
-	Input []byte `json:"input"`
+	AgentId string
+	Agent   *Agent
+	Args    []byte `json:"args"`
+	Input   []byte `json:"input"`
 }
 
 type CommandResult struct {
+	gorm.Model
 	CommandId uint
-	Output    []byte
 	AgentId   string
-	Command   Command
-	Agent     Agent
+	Output    []byte
+	Command   *Command
+	Agent     *Agent
 }
