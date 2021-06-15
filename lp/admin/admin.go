@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"../models"
 	"github.com/gorilla/mux"
@@ -73,6 +74,7 @@ func (h *AdminHandler) postAgentCommandHandler(w http.ResponseWriter, r *http.Re
 	command := models.Command{
 		AgentId: agentId,
 		Args:    argsBytes,
+		Timeout: 1 * time.Second,
 	}
 	tx := h.db.Create(&command)
 	if tx.Error != nil {

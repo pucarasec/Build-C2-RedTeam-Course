@@ -6,12 +6,16 @@ option go_package = "/protocol/app";
 message Command {
     uint64 id = 1;
     repeated string args = 2;
-    bytes input = 3;
+    repeated string env = 3;
+    bytes stdin = 4;
+    int64 timeoutMillis = 5;
 }
 
 message CommandResult {
     uint64 commandId = 1;
-    bytes output = 2;
+    int32 exitCode = 2;
+    bytes stdout = 3;
+    bytes stderr = 4;
 }
 
 message CommandListMsg {
@@ -22,9 +26,7 @@ message CommandResultListMsg {
     repeated CommandResult commandResults = 1;
 }
 
-message GetCommandListMsg {
-    uint64 lastId = 1;
-}
+message GetCommandListMsg {}
 
 message AgentMsg {
     oneof MsgType {

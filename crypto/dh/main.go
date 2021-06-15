@@ -13,11 +13,22 @@ type KeyExchange struct {
 	PrivateKey *ecdsa.PrivateKey
 }
 
-func NewKeyExchange() *KeyExchange {
-	privateKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+func NewKeyExchange(privateKeyBytes []byte) (*KeyExchange, error) {
+	var privateKey *ecdsa.PrivateKey
+	var err error
+	if privateKeyBytes == nil {
+		privateKey, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	} else {
+		privateKey, err = x509.ParseECPrivateKey(privateKeyBytes)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &KeyExchange{
 		PrivateKey: privateKey,
-	}
+	}, nil
 }
 
 func (ke *KeyExchange) GetSharedKey(publicKeyBytes []byte) ([]byte, error) {
@@ -39,6 +50,11 @@ func (ke *KeyExchange) GetPublicKey() []byte {
 		fmt.Println(err)
 	}
 	return bytes
+}
+
+func (ke *KeyExchange) GetPrivateKey() []byte {
+	keyBytes, _ := x509.MarshalECPrivateKey(ke.PrivateKey)
+	return keyBytes
 }
 
 func GetClientID(publicKey []byte) []byte {
