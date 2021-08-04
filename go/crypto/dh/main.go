@@ -37,11 +37,8 @@ func (ke *KeyExchange) GetSharedKey(publicKeyBytes []byte) ([]byte, error) {
 		return nil, err
 	}
 	ecdsaPublicKey := publicKey.(*ecdsa.PublicKey)
-	x, y := ecdsaPublicKey.Curve.ScalarMult(ecdsaPublicKey.X, ecdsaPublicKey.Y, ke.PrivateKey.D.Bytes())
-	h := sha256.New()
-	h.Write(x.Bytes())
-	h.Write(y.Bytes())
-	return h.Sum(nil), nil
+	x, _ := ecdsaPublicKey.Curve.ScalarMult(ecdsaPublicKey.X, ecdsaPublicKey.Y, ke.PrivateKey.D.Bytes())
+	return x.Bytes(), nil
 }
 
 func (ke *KeyExchange) GetPublicKey() []byte {
