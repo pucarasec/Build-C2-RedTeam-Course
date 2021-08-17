@@ -1,6 +1,6 @@
 import subprocess
 from .comm.client import Client
-from .protocol.app_pb2 import AgentMsg, LPMsg, CommandResult
+from malon_common.protocol.app_pb2 import AgentMsg, LPMsg, CommandResult
 
 
 class Agent:
@@ -18,6 +18,8 @@ class Agent:
         if lp_msg.HasField('CommandListMsg'):
             command_results = []
             for command in lp_msg.CommandListMsg.commands:
+                command_result = CommandResult()
+                command_result.commandId = command.id
                 try:
                     completed = subprocess.run(
                         command.args,
@@ -25,29 +27,21 @@ class Agent:
                         timeout=command.timeoutMillis / 1000.0,
                         capture_output=True
                     )
-                    command_result = CommandResult()
-                    command_result.commandId = command.id
                     command_result.exitCode = completed.returncode
                     if completed.stdout is not None:
                         command_result.stdout = completed.stdout
                     if completed.stderr is not None:
                         command_result.stderr = completed.stderr
-                    command_results.append(command_result)
                 except subprocess.TimeoutExpired as e:
-                    command_result = CommandResult()
-                    command_result.commandId = command.id
                     command_result.exitCode = -1
                     if e.stdout is not None:
                         command_result.stdout = e.stdout
                     if e.stderr is not None:
                         command_result.stderr = e.stderr
-                    command_results.append(command_result)
                 except PermissionError as e:
-                    command_result = CommandResult()
-                    command_result.commandId = command.id
                     command_result.exitCode = -1
-                    command_results.append(command_result)
 
+                command_results.append(command_result)
 
             if len(command_results) > 0:
                 agent_msg = AgentMsg()

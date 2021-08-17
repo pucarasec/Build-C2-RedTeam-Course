@@ -1,12 +1,13 @@
 import time
 import json
+import random
 from base64 import b64encode, b64decode
 
 from .comm.http import HttpClient
 from .comm.sym import EncryptedClient
 from .comm.dh import DHClient
 
-from .crypto.dh import KeyExchange
+from malon_common.crypto.dh import KeyExchange
 
 from . import Agent
 
@@ -28,4 +29,4 @@ while True:
         agent.heartbeat()
     except Exception as e:
         print(e)
-    time.sleep(1.0)
+    time.sleep(3.0 + 2.5*(2.0*random.random() - 1.0))

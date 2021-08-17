@@ -19,7 +19,6 @@ class HttpClient:
         response = requests.post(self._url, {'m': b64encode(msg)})
         if not response.ok:
             raise RuntimeError('Got HTTP status code: {}'.format(response.status_code))
-
         encoded_response_msg = find_encoded_msg(response.content)
         if encoded_response_msg is None:
             raise RuntimeError('No encoded message found in response')

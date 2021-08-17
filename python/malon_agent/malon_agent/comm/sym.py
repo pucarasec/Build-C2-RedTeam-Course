@@ -1,5 +1,5 @@
 from .client import Client
-from ..crypto.sym import SymmetricCipher
+from malon_common.crypto.sym import SymmetricCipher
 
 class EncryptedClient:
     def __init__(self, key: bytes, client: Client):

@@ -1,8 +1,8 @@
 from typing import Optional
-from ..protocol.base_pb2 import BaseMsg, ClientMsg, HandshakeMsg, ErrorType
+from malon_common.protocol.base_pb2 import BaseMsg, ClientMsg, HandshakeMsg, ErrorType
 from .client import Client
-from ..crypto.dh import KeyExchange, get_client_id
-from ..crypto.sym import SymmetricCipher
+from malon_common.crypto.dh import KeyExchange, get_client_id
+from malon_common.crypto.sym import SymmetricCipher
 
 class DHClient:
     def __init__(self, ke: KeyExchange, client: Client):
@@ -44,7 +44,7 @@ class DHClient:
             else:
                 raise RuntimeError('Message did not pass verification')
         elif response_msg.HasField('ErrorMsg'):
-            if response_msg.ErrorMsg.Type == ErrorType.HANDSHAKE_EXPIRED:
+            if response_msg.ErrorMsg.type == ErrorType.HANDSHAKE_EXPIRED:
                 self.negotiate_key()
                 return self.send_msg(msg)
             else:
