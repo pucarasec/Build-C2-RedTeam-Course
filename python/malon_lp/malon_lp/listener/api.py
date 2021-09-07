@@ -20,9 +20,9 @@ class ApiHandler:
                 if task['type'] == 'command':
                     command = Command()
                     command.id = task['id']
-                    for arg in task['params']['args']:
+                    for arg in task['info']['args']:
                         command.args.append(arg)
-                    command.timeoutMillis = task['params']['timeout_millis']
+                    command.timeoutMillis = task['info']['timeout_millis']
                     lp_msg.CommandListMsg.commands.append(command)
         return lp_msg.SerializeToString()
 
