@@ -1,16 +1,15 @@
-package layer0
+package comm
 
 import (
-	"../../../crypto/sym"
-	"../handler"
+	"../../crypto/sym"
 )
 
 type EncryptedHandler struct {
 	key        []byte
-	subhandler handler.Handler
+	subhandler Handler
 }
 
-func NewEncryptedHandler(key []byte, subhandler handler.Handler) *EncryptedHandler {
+func NewEncryptedHandler(key []byte, subhandler Handler) *EncryptedHandler {
 	return &EncryptedHandler{
 		key:        key,
 		subhandler: subhandler,

@@ -9,12 +9,12 @@ import (
 	"time"
 
 	protocol "../protocol/app"
-	"./comm/client"
+	"./comm"
 	"google.golang.org/protobuf/proto"
 )
 
 type Agent struct {
-	client        client.Client
+	client        comm.Client
 	lastCommandId uint
 }
 
@@ -31,7 +31,7 @@ type CommandResult struct {
 	Stdout   []byte
 }
 
-func NewAgent(client client.Client) *Agent {
+func NewAgent(client comm.Client) *Agent {
 	return &Agent{client: client}
 }
 

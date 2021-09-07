@@ -1,18 +1,16 @@
-package layer0
+package comm
 
 import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
-
-	"../handler"
 )
 
 type HTTPHandler struct {
-	subhandler handler.Handler
+	subhandler Handler
 }
 
-func NewHTTPHandler(subhandler handler.Handler) *HTTPHandler {
+func NewHTTPHandler(subhandler Handler) *HTTPHandler {
 	return &HTTPHandler{subhandler: subhandler}
 }
 

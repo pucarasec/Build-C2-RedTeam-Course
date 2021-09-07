@@ -1,4 +1,4 @@
-package layer1
+package comm
 
 type KeyRepository interface {
 	Set(clientID string, publicKey []byte) error

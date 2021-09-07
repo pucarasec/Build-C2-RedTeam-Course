@@ -1,22 +1,21 @@
-package layer1
+package comm
 
 import (
 	"fmt"
 
-	"../../../crypto/dh"
-	"../../../crypto/sym"
-	protocol "../../../protocol/base"
-	"../client"
+	"../../crypto/dh"
+	"../../crypto/sym"
+	protocol "../../protocol/base"
 	"google.golang.org/protobuf/proto"
 )
 
 type DHClient struct {
 	sharedKey   []byte
 	keyExchange *dh.KeyExchange
-	subclient   client.Client
+	subclient   Client
 }
 
-func NewDHClient(keyExchange *dh.KeyExchange, subclient client.Client) *DHClient {
+func NewDHClient(keyExchange *dh.KeyExchange, subclient Client) *DHClient {
 	return &DHClient{
 		sharedKey:   nil,
 		keyExchange: keyExchange,

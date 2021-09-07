@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"time"
 
 	"../crypto/dh"
-	"./comm/layer0"
-	"./comm/layer1"
+	"./comm"
 )
 
 func main() {
@@ -17,8 +17,8 @@ func main() {
 		return
 	}
 
-	httpClient := layer0.NewHttpClient(config.TargetUrl)
-	encHttpClient := layer0.NewEncryptedClient(httpClient, config.SymKey)
+	httpClient := comm.NewHttpClient(config.TargetUrl)
+	encHttpClient := comm.NewEncryptedClient(httpClient, config.SymKey)
 
 	keyExchange, err := dh.NewKeyExchange(config.PrivateKey)
 	if err != nil {
@@ -26,12 +26,20 @@ func main() {
 		return
 	}
 
-	client := layer1.NewDHClient(keyExchange, encHttpClient)
+	client := comm.NewDHClient(keyExchange, encHttpClient)
 
 	agent := NewAgent(client)
 
 	encodedPrivateKey := base64.StdEncoding.EncodeToString(keyExchange.GetPrivateKey())
 	fmt.Printf("Private Key: %s\n", encodedPrivateKey)
+
+	encodedPublicKey := base64.StdEncoding.EncodeToString(keyExchange.GetPublicKey())
+	fmt.Printf("Public Key: %s\n", encodedPublicKey)
+
+	selfSharedKey, _ := keyExchange.GetSharedKey(keyExchange.GetPublicKey())
+	encodedSelfSharedKey := base64.StdEncoding.EncodeToString(selfSharedKey)
+	fmt.Printf("Self Shared Key: %s\n", encodedSelfSharedKey)
+	fmt.Printf("Client ID: %s\n", hex.EncodeToString(client.GetClientID()))
 
 	for {
 		agent.heartbeat()

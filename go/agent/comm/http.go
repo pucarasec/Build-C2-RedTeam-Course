@@ -1,4 +1,4 @@
-package layer0
+package comm
 
 import (
 	"encoding/base64"

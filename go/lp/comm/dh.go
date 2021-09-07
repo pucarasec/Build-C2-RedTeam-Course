@@ -1,22 +1,21 @@
-package layer1
+package comm
 
 import (
 	"encoding/hex"
 
-	"../../../crypto/dh"
-	"../../../crypto/sym"
-	protocol "../../../protocol/base"
-	"../handler"
+	"../../crypto/dh"
+	"../../crypto/sym"
+	protocol "../../protocol/base"
 	"google.golang.org/protobuf/proto"
 )
 
 type DHHandler struct {
 	keyRepository KeyRepository
 	keyExchange   *dh.KeyExchange
-	subhandler    handler.AuthenticatedHandler
+	subhandler    AuthenticatedHandler
 }
 
-func NewDHHandler(keyRepository KeyRepository, keyExchange *dh.KeyExchange, subhandler handler.AuthenticatedHandler) *DHHandler {
+func NewDHHandler(keyRepository KeyRepository, keyExchange *dh.KeyExchange, subhandler AuthenticatedHandler) *DHHandler {
 	return &DHHandler{
 		keyRepository: keyRepository,
 		keyExchange:   keyExchange,

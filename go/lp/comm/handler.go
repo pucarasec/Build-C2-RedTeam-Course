@@ -1,4 +1,4 @@
-package handler
+package comm
 
 type Handler interface {
 	HandleMsg(msg []byte) ([]byte, error)

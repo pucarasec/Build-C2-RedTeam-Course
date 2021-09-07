@@ -1,16 +1,15 @@
-package layer0
+package comm
 
 import (
-	"../../../crypto/sym"
-	"../client"
+	"../../crypto/sym"
 )
 
 type EncryptedClient struct {
 	key    []byte
-	client client.Client
+	client Client
 }
 
-func NewEncryptedClient(client client.Client, key []byte) *EncryptedClient {
+func NewEncryptedClient(client Client, key []byte) *EncryptedClient {
 	return &EncryptedClient{
 		key:    key,
 		client: client,

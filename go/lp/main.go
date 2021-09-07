@@ -5,8 +5,7 @@ import (
 	"net/http"
 
 	"../crypto/dh"
-	"./comm/layer0"
-	"./comm/layer1"
+	"./comm"
 	"./models"
 
 	"./admin"
@@ -17,9 +16,9 @@ func main() {
 	db := models.GetDB()
 	appHandler := NewAppHandler(db)
 	keyExchange, _ := dh.NewKeyExchange(nil)
-	dhHandler := layer1.NewDHHandler(layer1.NewBasicKeyRespository(), keyExchange, appHandler)
-	encryptedHandler := layer0.NewEncryptedHandler(key, dhHandler)
-	handler := layer0.NewHTTPHandler(encryptedHandler)
+	dhHandler := comm.NewDHHandler(comm.NewBasicKeyRespository(), keyExchange, appHandler)
+	encryptedHandler := comm.NewEncryptedHandler(key, dhHandler)
+	handler := comm.NewHTTPHandler(encryptedHandler)
 	http.Handle("/", handler)
 
 	adminHandler := admin.NewAdminHandler("/admin", db)
