@@ -46,7 +46,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("Error: %e", err)
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(time.Duration(config.ConnectionIntervalMs) * time.Millisecond)
 	}
 
 }

@@ -6,9 +6,10 @@ import (
 )
 
 type Config struct {
-	PrivateKey []byte `json:"PrivateKey"`
-	SymKey     []byte `json:"SymKey"`
-	TargetUrl  string `json:"TargetUrl"`
+	PrivateKey           []byte `json:"PrivateKey"`
+	SymKey               []byte `json:"SymKey"`
+	TargetUrl            string `json:"TargetUrl"`
+	ConnectionIntervalMs int    `json:"ConnectionIntervalMs"`
 }
 
 func LoadConfig(file string) (*Config, error) {
