@@ -1,5 +1,5 @@
 from typing import Mapping, Optional
-from .handler import Handler
+from . import Handler
 from malon_common.crypto.dh import KeyExchange, get_client_id
 from malon_common.crypto.sym import SymmetricCipher
 from malon_common.protocol.base_pb2 import BaseMsg, ErrorType
@@ -8,7 +8,7 @@ from malon_common.protocol.base_pb2 import BaseMsg, ErrorType
 KeyRespository = Mapping[str, bytes]
 
 
-class DHHandler:
+class DHHandler(Handler):
     def __init__(self, ke: KeyExchange, handler: Handler, kr: Optional[KeyRespository] = None):
         self._ke = ke
         self._handler = handler
@@ -36,7 +36,7 @@ class DHHandler:
 
         return response_msg.SerializeToString()
 
-    def handle_msg(self, msg: bytes) -> bytes:
+    def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
         base_msg = BaseMsg()
         base_msg.ParseFromString(msg)
         if base_msg.HasField('HandshakeMsg'):

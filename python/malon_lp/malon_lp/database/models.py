@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey, Column, text
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, validates
 from sqlalchemy.types import DateTime, String, Integer, JSON, BLOB
 
 Base = declarative_base()
@@ -32,3 +32,20 @@ class TaskResult(Base):
     task = relationship('Task', back_populates='result')
     info = Column(JSON)
     output = Column(BLOB)
+
+class Listener(Base):
+    __tablename__ = 'listeners'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    type = Column(String, nullable=False)
+    bind_host = Column(String, nullable=False, default="0.0.0.0")
+    bind_port = Column(Integer, nullable=False, unique=True)
+    target_host = Column(String, nullable=False)
+    target_port = Column(Integer, nullable=False)
+    connection_interval_ms = Column(Integer, nullable=False, default=1000)
+    sym_key = Column(BLOB, nullable=False)
+
+    @validates('sym_key')
+    def validate_sym_key(self, _, sym_key):
+        assert len(sym_key) == 16
+        return sym_key

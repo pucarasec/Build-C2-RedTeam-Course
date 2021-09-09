@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 from base64 import b64decode, b64encode
 from malon_common.protocol.app_pb2 import AgentMsg, LPMsg, Command
 
@@ -39,9 +39,10 @@ class ApiHandler:
         lp_msg.SuccessMsg.SetInParent()
         return lp_msg.SerializeToString()
 
-    def handle_msg(self, msg: bytes, client_id: str) -> bytes:
+    def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
+        if client_id is None:
+            raise RuntimeError('No client_id')
         self._report_agent(client_id)
-        print(msg)
         agent_msg = AgentMsg()
         agent_msg.ParseFromString(msg)
         if agent_msg.HasField('GetCommandListMsg'):
