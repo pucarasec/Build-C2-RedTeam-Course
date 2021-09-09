@@ -88,7 +88,7 @@ func (a *Agent) sendMsg(agentMsg *protocol.AgentMsg) (*protocol.LPMsg, error) {
 	return &lpMsg, nil
 }
 
-func (a *Agent) heartbeat() {
+func (a *Agent) heartbeat() error {
 	agentMsg := &protocol.AgentMsg{
 		MsgType: &protocol.AgentMsg_GetCommandListMsg{
 			GetCommandListMsg: &protocol.GetCommandListMsg{},
@@ -96,7 +96,7 @@ func (a *Agent) heartbeat() {
 	}
 	lpMsg, err := a.sendMsg(agentMsg)
 	if err != nil {
-		return
+		return err
 	}
 	if commandListMsg := lpMsg.GetCommandListMsg(); commandListMsg != nil {
 		var commandResults []*protocol.CommandResult
@@ -126,6 +126,9 @@ func (a *Agent) heartbeat() {
 			},
 		}
 
-		a.sendMsg(agentMsg)
+		_, err := a.sendMsg(agentMsg)
+		return err
 	}
+
+	return nil
 }

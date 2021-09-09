@@ -42,7 +42,10 @@ func main() {
 	fmt.Printf("Client ID: %s\n", hex.EncodeToString(client.GetClientID()))
 
 	for {
-		agent.heartbeat()
+		err := agent.heartbeat()
+		if err != nil {
+			fmt.Printf("Error: %e", err)
+		}
 		time.Sleep(1 * time.Second)
 	}
 
