@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -11,11 +12,15 @@ import (
 )
 
 func main() {
-	config, err := LoadConfig("config.json")
+	config, err := LoadEmbeddedConfig()
+	// config, err := LoadConfig("config.json")
 	if err != nil {
 		fmt.Printf("Error reading config file: %s\n", err)
 		return
 	}
+
+	config_json, _ := json.Marshal(&config)
+	fmt.Printf("Loaded config:\n%s\n", config_json)
 
 	httpClient := comm.NewHttpClient(config.TargetUrl)
 	encHttpClient := comm.NewEncryptedClient(httpClient, config.SymKey)
