@@ -1,2 +1,6 @@
 flask
 sqlalchemy
+requests
+protobuf
+pycryptodome
+ecdsa
