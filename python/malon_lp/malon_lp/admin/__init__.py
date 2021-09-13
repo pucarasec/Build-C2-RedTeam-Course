@@ -54,16 +54,16 @@ def listener_delete(id: int):
     Listener.query.filter_by(id=id).delete()
     return jsonify({'success': True})
 
-@app.route("/listeners/<int:id>/launcher", methods=['GET'])
-def listener_launcher(id: int):
+@app.route("/listeners/<int:id>/launcher/<platform>", methods=['GET'])
+def listener_launcher(id: int, platform: str):
     listener = Listener.query.get(id)
     if listener is None: return abort(404)
-    launcher_bytes = render_launcher(listener)
+    launcher_bytes = render_launcher(listener, platform)
     return send_file(
         io.BytesIO(launcher_bytes),
         mimetype='application/octet-stream',
         as_attachment=True,
-        attachment_filename='launcher'
+        attachment_filename='launcher-{}'.format(platform)
     )
 
 

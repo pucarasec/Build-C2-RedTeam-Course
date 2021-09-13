@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-//go:embed config.json
+//go:embed config_placeholder.bin
 var configBytes []byte
 
 type Config struct {
