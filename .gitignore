@@ -1,6 +1,6 @@
 __pycache__
 *.pyc
 *.egg-info
-go/agent/agent
+go/agent/build
 go/lp/lp
 go/lp/test.db
