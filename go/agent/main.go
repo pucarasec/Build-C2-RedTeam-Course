@@ -49,7 +49,7 @@ func main() {
 	for {
 		err := agent.heartbeat()
 		if err != nil {
-			fmt.Printf("Error: %e", err)
+			fmt.Printf("Error: %s\n", err)
 		}
 		time.Sleep(time.Duration(config.ConnectionIntervalMs) * time.Millisecond)
 	}
