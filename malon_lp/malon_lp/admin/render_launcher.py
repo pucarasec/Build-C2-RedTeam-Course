@@ -1,8 +1,8 @@
 import os
 import json
 from base64 import b64encode
-from ..database.models import Listener
-from malon_common.crypto.dh import KeyExchange
+from malon_lp.database.models import Listener
+from malon_lp.crypto.dh import KeyExchange
 
 def create_config(listener: Listener) -> dict:
     return {

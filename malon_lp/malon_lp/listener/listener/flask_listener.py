@@ -6,7 +6,7 @@ from malon_lp.listener.handler.sym import EncryptedHandler
 from malon_lp.listener.handler.dh import DHHandler
 from malon_lp.listener.handler.api import ApiHandler
 
-from malon_common.crypto.dh import KeyExchange
+from malon_lp.crypto.dh import KeyExchange
 
 class FlaskListener(Listener):
     def __init__(self, api_url: str, host: str, port: int, sym_key: bytes):

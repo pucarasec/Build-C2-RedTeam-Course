@@ -1,7 +1,7 @@
 from typing import Optional
 from . import Handler
 
-from malon_common.crypto.sym import SymmetricCipher
+from malon_lp.crypto.sym import SymmetricCipher
 
 class EncryptedHandler:
     KEY_LENGTH = 16

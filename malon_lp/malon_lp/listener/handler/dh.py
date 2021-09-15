@@ -3,8 +3,8 @@ from typing import Mapping, Optional
 from base64 import b64encode, b64decode
 
 from . import Handler
-from malon_common.crypto.dh import KeyExchange, get_client_id
-from malon_common.crypto.sym import SymmetricCipher
+from malon_lp.crypto.dh import KeyExchange, get_client_id
+from malon_lp.crypto.sym import SymmetricCipher
 
 
 
