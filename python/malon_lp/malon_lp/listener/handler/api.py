@@ -1,7 +1,6 @@
 from typing import NamedTuple, Optional
-from base64 import b64decode, b64encode
-from malon_common.protocol.app_pb2 import AgentMsg, LPMsg, Command
 
+import json
 import requests
 
 class ApiHandler:
@@ -11,43 +10,37 @@ class ApiHandler:
     def _report_agent(self, client_id: str):
         requests.post('{}/agents/{}/report'.format(self._base_url, client_id))
 
-    def _handle_get_command_list_msg(self, client_id: str, _msg) -> bytes:
-        lp_msg = LPMsg()
+    def _handle_get_tasks_msg(self, client_id: str, _msg) -> bytes:
         response = requests.get('{}/agents/{}/tasks/unread/'.format(self._base_url, client_id))
-        if response.ok:
-            tasks = response.json()
-            for task in tasks:
-                if task['type'] == 'command':
-                    command = Command()
-                    command.id = task['id']
-                    for arg in task['info']['args']:
-                        command.args.append(arg)
-                    command.timeoutMillis = task['info']['timeout_millis']
-                    lp_msg.CommandListMsg.commands.append(command)
-        return lp_msg.SerializeToString()
-
-    def _handle_command_result_list_msg(self, client_id: str, msg) -> bytes:
-        for command_result in msg.commandResults:
-            task_id = command_result.commandId
-            data = {
-                'info': {'status': command_result.exitCode},
-                'output': b64encode(command_result.stderr + command_result.stdout).decode('utf-8')
+        tasks = response.json() if response.ok else []
+        return json.dumps({
+            'task_list_msg': {
+                'tasks': tasks
             }
-            response = requests.post('{}/agents/{}/tasks/{}/result'.format(self._base_url, client_id, task_id), json=data)
+        }).encode('utf-8')
 
-        lp_msg = LPMsg()
-        lp_msg.SuccessMsg.SetInParent()
-        return lp_msg.SerializeToString()
+    def _handle_task_results_msg(self, client_id: str, msg) -> bytes:
+        for result in msg['results']:
+            task_id = result['task_id']
+            response = requests.post('{}/agents/{}/tasks/{}/result'.format(
+                self._base_url,
+                client_id,
+                task_id
+            ), json=result)
+        return json.dumps({
+            'status_msg': {
+                'success': True
+            }
+        }).encode('utf-8')
 
     def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
         if client_id is None:
             raise RuntimeError('No client_id')
         self._report_agent(client_id)
-        agent_msg = AgentMsg()
-        agent_msg.ParseFromString(msg)
-        if agent_msg.HasField('GetCommandListMsg'):
-            return self._handle_get_command_list_msg(client_id, agent_msg.GetCommandListMsg)
-        elif agent_msg.HasField('CommandResultListMsg'):
-            return self._handle_command_result_list_msg(client_id, agent_msg.CommandResultListMsg)
+        agent_msg = json.loads(msg.decode('utf-8'))
+        if agent_msg.get('get_tasks_msg') is not None:
+            return self._handle_get_tasks_msg(client_id, agent_msg['get_tasks_msg'])
+        elif agent_msg.get('task_results_msg') is not None:
+            return self._handle_task_results_msg(client_id, agent_msg['task_results_msg'])
         else:
             raise RuntimeError('Unexpected message type')

@@ -18,7 +18,7 @@ while True:
             'type': 'command',
             'info': {
                 'args': command_args,
-                'timeout_millis': 5000
+                'timeout_ms': 5000
             }
         }
     )
@@ -30,7 +30,9 @@ while True:
         )
         task_result_list = response.json()
         for task_result in task_result_list:
-            sys.stdout.write(b64decode(task_result['output']).decode('utf-8'))
+            output_encoded = task_result.get('output')
+            if output_encoded is not None:
+                sys.stdout.write(b64decode(output_encoded).decode('utf-8'))
 
         if len(task_result_list) > 0:
             break

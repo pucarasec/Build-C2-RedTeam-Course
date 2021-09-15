@@ -1,18 +1,42 @@
 package comm
 
 import (
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 
 	"../../crypto/dh"
 	"../../crypto/sym"
-	protocol "../../protocol/base"
-	"google.golang.org/protobuf/proto"
 )
 
 type DHClient struct {
 	sharedKey   []byte
 	keyExchange *dh.KeyExchange
 	subclient   Client
+}
+
+type HandshakeMsg struct {
+	PublicKey []byte `json:"public_key"`
+}
+
+type ServerMsg struct {
+	Payload []byte `json:"payload"`
+}
+
+type ClientMsg struct {
+	ClientID string `json:"client_id"`
+	Payload  []byte `json:"payload"`
+}
+
+type ErrorMsg struct {
+	Type string `json:"type"`
+}
+
+type BaseMsg struct {
+	HandshakeMsg *HandshakeMsg `json:"handshake_msg,omitempty"`
+	ClientMsg    *ClientMsg    `json:"client_msg,omitempty"`
+	ServerMsg    *ServerMsg    `json:"server_msg,omitempty"`
+	ErrorMsg     *ErrorMsg     `json:"error_msg,omitempty"`
 }
 
 func NewDHClient(keyExchange *dh.KeyExchange, subclient Client) *DHClient {
@@ -23,9 +47,9 @@ func NewDHClient(keyExchange *dh.KeyExchange, subclient Client) *DHClient {
 	}
 }
 
-func (c *DHClient) sendBaseMsg(baseMsg *protocol.BaseMsg) (*protocol.BaseMsg, error) {
-	var responseBaseMsg protocol.BaseMsg
-	msg, err := proto.Marshal(baseMsg)
+func (c *DHClient) sendBaseMsg(baseMsg *BaseMsg) (*BaseMsg, error) {
+	var responseBaseMsg BaseMsg
+	msg, err := json.Marshal(baseMsg)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +57,7 @@ func (c *DHClient) sendBaseMsg(baseMsg *protocol.BaseMsg) (*protocol.BaseMsg, er
 	if err != nil {
 		return nil, err
 	}
-	err = proto.Unmarshal(response, &responseBaseMsg)
+	err = json.Unmarshal(response, &responseBaseMsg)
 	if err != nil {
 		return nil, err
 	}
@@ -41,19 +65,17 @@ func (c *DHClient) sendBaseMsg(baseMsg *protocol.BaseMsg) (*protocol.BaseMsg, er
 }
 
 func (c *DHClient) NegotiateKey() error {
-	msg := &protocol.BaseMsg{
-		MsgType: &protocol.BaseMsg_HandshakeMsg{
-			HandshakeMsg: &protocol.HandshakeMsg{
-				PublicKey: c.keyExchange.GetPublicKey(),
-			},
+	msg := BaseMsg{
+		HandshakeMsg: &HandshakeMsg{
+			PublicKey: c.keyExchange.GetPublicKey(),
 		},
 	}
-	response, err := c.sendBaseMsg(msg)
+	response, err := c.sendBaseMsg(&msg)
 	if err != nil {
 		return err
 	}
 
-	if handshakeMsg := response.GetHandshakeMsg(); handshakeMsg != nil {
+	if handshakeMsg := response.HandshakeMsg; handshakeMsg != nil {
 		c.sharedKey, err = c.keyExchange.GetSharedKey(handshakeMsg.PublicKey)
 		if err != nil {
 			return err
@@ -82,12 +104,10 @@ func (c *DHClient) SendMsg(msg []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	baseMsg := &protocol.BaseMsg{
-		MsgType: &protocol.BaseMsg_ClientMsg{
-			ClientMsg: &protocol.ClientMsg{
-				ClientID: c.GetClientID(),
-				Payload:  encryptedMsg,
-			},
+	baseMsg := &BaseMsg{
+		ClientMsg: &ClientMsg{
+			ClientID: hex.EncodeToString(c.GetClientID()),
+			Payload:  encryptedMsg,
 		},
 	}
 	responseBaseMsg, err := c.sendBaseMsg(baseMsg)
@@ -95,10 +115,10 @@ func (c *DHClient) SendMsg(msg []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	if serverMsg := responseBaseMsg.GetServerMsg(); serverMsg != nil {
+	if serverMsg := responseBaseMsg.ServerMsg; serverMsg != nil {
 		return sym.ValidateThenDecryptMessage(serverMsg.Payload, c.sharedKey)
-	} else if errorMsg := responseBaseMsg.GetErrorMsg(); errorMsg != nil {
-		if errorMsg.Type == protocol.ErrorType_HANDSHAKE_EXPIRED {
+	} else if errorMsg := responseBaseMsg.ErrorMsg; errorMsg != nil {
+		if errorMsg.Type == "HANDSHAKE_EXPIRED" {
 			c.NegotiateKey()
 			return c.SendMsg(msg)
 		} else {

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"../crypto/dh"
+	"./app"
 	"./comm"
 )
 
@@ -33,7 +34,7 @@ func main() {
 
 	client := comm.NewDHClient(keyExchange, encHttpClient)
 
-	agent := NewAgent(client)
+	agent := app.NewAgent(client)
 
 	encodedPrivateKey := base64.StdEncoding.EncodeToString(keyExchange.GetPrivateKey())
 	fmt.Printf("Private Key: %s\n", encodedPrivateKey)
@@ -47,7 +48,7 @@ func main() {
 	fmt.Printf("Client ID: %s\n", hex.EncodeToString(client.GetClientID()))
 
 	for {
-		err := agent.heartbeat()
+		err := agent.Heartbeat()
 		if err != nil {
 			fmt.Printf("Error: %s\n", err)
 		}

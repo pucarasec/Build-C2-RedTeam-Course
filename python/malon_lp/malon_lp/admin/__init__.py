@@ -115,11 +115,12 @@ def agent_tasks_unread(agent_id: str):
 @app.route("/agents/<agent_id>/tasks/", methods=['POST'])
 def agent_tasks_post(agent_id: str):
     task_d = request.json
+    input_encoded = task_d.get('input')
     task = Task(
         agent_id=agent_id,
         type=task_d.get('type'),
         info=task_d.get('info'),
-        input=b64decode(task_d.get('input')) if 'input' in task_d else None
+        input=b64decode(input_encoded) if input_encoded is not None else None
     )
     db_session.add(task)
     db_session.commit()
@@ -133,10 +134,11 @@ def agent_task_result(agent_id: str, task_id: int):
 @app.route("/agents/<agent_id>/tasks/<int:task_id>/result", methods=['POST'])
 def agent_task_result_post(agent_id: str, task_id: int):
     task_result_d = request.json
+    output_encoded = task_result_d.get('output')
     task_result = TaskResult(
         task_id=task_id,
         info=task_result_d.get('info'),
-        output=b64decode(task_result_d.get('output')) if 'output' in task_result_d else None
+        output=b64decode(output_encoded) if output_encoded is not None else None 
     )
     db_session.add(task_result)
     db_session.commit()
