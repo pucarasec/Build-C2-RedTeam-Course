@@ -27,6 +27,7 @@ class FlaskListener(Listener):
         return 'http'
     
     def run(self):
+        # A implementar
         app = Flask(__name__)
 
         @app.route('/', methods=["POST"])
