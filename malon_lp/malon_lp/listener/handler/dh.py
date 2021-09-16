@@ -2,7 +2,7 @@ import json
 from typing import Mapping, Optional
 from base64 import b64encode, b64decode
 
-from . import Handler
+from . import Handler, AuthHandler
 from malon_lp.crypto.dh import KeyExchange, get_client_id
 from malon_lp.crypto.sym import SymmetricCipher
 
@@ -12,7 +12,7 @@ KeyRespository = Mapping[str, bytes]
 
 
 class DHHandler(Handler):
-    def __init__(self, ke: KeyExchange, handler: Handler, kr: Optional[KeyRespository] = None):
+    def __init__(self, ke: KeyExchange, handler: AuthHandler, kr: Optional[KeyRespository] = None):
         self._ke = ke
         self._handler = handler
         self._kr = kr if kr is not None else {}
@@ -32,7 +32,7 @@ class DHHandler(Handler):
         if key is not None:
             cipher = SymmetricCipher(self._ke.get_shared_key(self._kr[client_id]))
             payload = cipher.verify_decrypt_msg(encrypted_payload)
-            response = self._handler.handle_msg(payload, client_id=client_id)
+            response = self._handler.handle_auth_msg(payload, client_id)
             encrypted_response = cipher.encrypt_sign_msg(response)
             return json.dumps({
                 'server_msg': {
@@ -46,7 +46,7 @@ class DHHandler(Handler):
                 }
             }).encode('utf-8')
 
-    def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
+    def handle_msg(self, msg: bytes) -> bytes:
         base_msg = json.loads(msg.decode('utf-8'))
         if base_msg.get('handshake_msg') is not None:
             return self._handle_handshake_msg(b64decode(base_msg['handshake_msg']['public_key']))

@@ -3,7 +3,7 @@ from . import Handler
 
 from malon_lp.crypto.sym import SymmetricCipher
 
-class EncryptedHandler:
+class EncryptedHandler(Handler):
     KEY_LENGTH = 16
 
     def __init__(self, key: bytes, handler: Handler):
@@ -13,7 +13,7 @@ class EncryptedHandler:
         self._cipher = SymmetricCipher(key)
         self._handler = handler
     
-    def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
+    def handle_msg(self, msg: bytes) -> bytes:
         decrypted_msg = self._cipher.verify_decrypt_msg(msg)
         response_msg = self._handler.handle_msg(decrypted_msg, client_id)
         encrypted_response_msg = self._cipher.encrypt_sign_msg(response_msg)

@@ -1,9 +1,11 @@
 from typing import NamedTuple, Optional
 
+from . import AuthHandler
+
 import json
 import requests
 
-class ApiHandler:
+class ApiHandler(AuthHandler):
     def __init__(self, base_url: str):
         self._base_url = base_url
     
@@ -33,9 +35,7 @@ class ApiHandler:
             }
         }).encode('utf-8')
 
-    def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
-        if client_id is None:
-            raise RuntimeError('No client_id')
+    def handle_auth_msg(self, msg: bytes, client_id: str) -> bytes:
         self._report_agent(client_id)
         agent_msg = json.loads(msg.decode('utf-8'))
         if agent_msg.get('get_tasks_msg') is not None:
