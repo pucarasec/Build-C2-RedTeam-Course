@@ -6,8 +6,10 @@ from malon_lp.crypto.dh import KeyExchange
 
 def create_config(listener: Listener) -> dict:
     return {
-        'TargetUrl': 'http://{}:{}'.format(listener.target_host, listener.target_port),
-        'ConnectionIntervalMs': listener.connection_interval_ms,
+        'Type': listener.type,
+        'Host': listener.target_host,
+        'Port': listener.target_port,
+        'IntervalMs': listener.connection_interval_ms,
         'SymKey': b64encode(listener.sym_key).decode('utf-8'),
         'PrivateKey': b64encode(KeyExchange().get_private_key()).decode('utf-8')
     }

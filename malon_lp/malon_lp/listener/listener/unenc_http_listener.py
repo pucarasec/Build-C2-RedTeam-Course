@@ -2,29 +2,27 @@ from flask import Flask, request
 from base64 import b64decode, b64encode
 
 from malon_lp.listener import Listener
-from malon_lp.listener.handler.sym import EncryptedHandler
-from malon_lp.listener.handler.dh import DHHandler
+from malon_lp.listener.handler.dummy_auth import DummyAuthHandler
 from malon_lp.listener.handler.api import ApiHandler
 
 from malon_lp.crypto.dh import KeyExchange
 
-class FlaskListener(Listener):
-    def __init__(self, api_url: str, host: str, port: int, sym_key: bytes):
+class UnencryptedHttpListener(Listener):
+    def __init__(self, api_url: str, host: str, port: int):
         handler = ApiHandler(api_url)
-        handler = DHHandler(KeyExchange(), handler)
-        handler = EncryptedHandler(sym_key, handler)
+        handler = DummyAuthHandler(handler)
 
         self._handler = handler
         self._host = host
         self._port = port
     
     @classmethod
-    def new(cls, api_url: str, host: str, port: int, sym_key: bytes) -> 'Listener':
-        return cls(api_url, host, port, sym_key)
+    def new(cls, api_url: str, host: str, port: int, _sym_key: bytes) -> 'Listener':
+        return cls(api_url, host, port)
     
     @classmethod
     def type_name(cls) -> str:
-        return 'http'
+        return 'unenc-http'
     
     def run(self):
         # A implementar

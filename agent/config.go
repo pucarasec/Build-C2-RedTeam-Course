@@ -10,10 +10,12 @@ import (
 var configBytes []byte
 
 type Config struct {
-	PrivateKey           []byte `json:"PrivateKey"`
-	SymKey               []byte `json:"SymKey"`
-	TargetUrl            string `json:"TargetUrl"`
-	ConnectionIntervalMs int    `json:"ConnectionIntervalMs"`
+	PrivateKey []byte `json:"PrivateKey"`
+	SymKey     []byte `json:"SymKey"`
+	Type       string `json:"Type"`
+	Host       string `json:"Host"`
+	Port       int    `json:"Port"`
+	IntervalMs int    `json:"IntervalMs"`
 }
 
 func LoadConfig(file string) (*Config, error) {
