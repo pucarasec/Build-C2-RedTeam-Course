@@ -14,7 +14,7 @@ func createKeyExchange(config *Config) (*dh.KeyExchange, error) {
 		return nil, err
 	}
 
-	clientID := dh.GetClientID(keyExchange.GetPrivateKey())
+	clientID := dh.GetClientID(keyExchange.GetPublicKey())
 	fmt.Printf("Client ID: %s\n", hex.EncodeToString(clientID))
 	return keyExchange, nil
 }
@@ -32,7 +32,7 @@ func CreateHttpClient(config *Config) (comm.Client, error) {
 	return dhClient, nil
 }
 
-func CreateUnencHttpClient(config *Config) (comm.Client, error) {
+func CreateUnencryptedHttpClient(config *Config) (comm.Client, error) {
 	keyExchange, err := createKeyExchange(config)
 	if err != nil {
 		return nil, err
@@ -45,12 +45,48 @@ func CreateUnencHttpClient(config *Config) (comm.Client, error) {
 	return dummyAuthClient, nil
 }
 
+func CreateUdpClient(config *Config) (comm.Client, error) {
+	keyExchange, err := createKeyExchange(config)
+	if err != nil {
+		return nil, err
+	}
+
+	udpClient, err := comm.NewUdpClient(config.Host, config.Port)
+	if err != nil {
+		return nil, err
+	}
+
+	encUdpClient := comm.NewEncryptedClient(udpClient, config.SymKey)
+	dhClient := comm.NewDHClient(keyExchange, encUdpClient)
+
+	return dhClient, nil
+}
+
+func CreateUnencryptedUdpClient(config *Config) (comm.Client, error) {
+	keyExchange, err := createKeyExchange(config)
+	if err != nil {
+		return nil, err
+	}
+
+	udpClient, err := comm.NewUdpClient(config.Host, config.Port)
+	if err != nil {
+		return nil, err
+	}
+
+	clientID := dh.GetClientID(keyExchange.GetPublicKey())
+	return comm.NewDummyAuthClient(clientID, udpClient), nil
+}
+
 func CreateClient(config *Config) (comm.Client, error) {
 	switch config.Type {
 	case "http":
 		return CreateHttpClient(config)
 	case "unenc-http":
-		return CreateUnencHttpClient(config)
+		return CreateUnencryptedHttpClient(config)
+	case "udp":
+		return CreateUdpClient(config)
+	case "unenc-udp":
+		return CreateUnencryptedUdpClient(config)
 	default:
 		return nil, fmt.Errorf("unknown client type")
 	}
