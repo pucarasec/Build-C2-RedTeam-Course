@@ -11,7 +11,7 @@ RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/l
 
 RUN apt-get update && apt-get -y install python3-pip
 
-RUN go get -x google.golang.org/protobuf/proto
+# RUN go get -x google.golang.org/protobuf/proto
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
