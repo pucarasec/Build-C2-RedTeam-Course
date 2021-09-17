@@ -42,10 +42,14 @@ func (a *Agent) Heartbeat() error {
 	if taskLisgMsg := lpMsg.TaskListMsg; taskLisgMsg != nil {
 		var taskResults []TaskResult
 		for _, task := range taskLisgMsg.Tasks {
-			if task.Type == "command" {
-				taskResult := handleCommandTask(task)
-				taskResults = append(taskResults, taskResult)
+			var taskResult TaskResult
+			switch task.Type {
+			case "command":
+				taskResult = handleCommandTask(task)
+			case "file":
+				taskResult = handleFileTask(task)
 			}
+			taskResults = append(taskResults, taskResult)
 		}
 		if len(taskResults) > 0 {
 			agentMsg := &AgentMsg{
