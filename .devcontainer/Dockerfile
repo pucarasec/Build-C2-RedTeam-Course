@@ -11,7 +11,9 @@ RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/l
 
 RUN apt-get update && apt-get -y install python3-pip
 
-# RUN go get -x google.golang.org/protobuf/proto
+# FIXME: exit 0 to ignore errors. This is to aviod errors of type "build constraints exclude all Go files"
+RUN go get -d "golang.org/x/sys/windows" "github.com/lxn/win" "github.com/kbinani/screenshot"; exit 0
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
