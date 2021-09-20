@@ -74,11 +74,13 @@ def agents():
 @app.route("/agents/<id>/report", methods=['POST'])
 def agents_ping(id: str):
     agent = Agent.query.get(id)
+    report_d = request.json
 
     if agent is None:
         print('New agent reported in: {}'.format(id))
         agent = Agent(id=id)
 
+    agent.listener_id = report_d['listener_id']
     agent.last_seen_at = datetime.now()
 
     db_session.add(agent)

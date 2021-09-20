@@ -18,6 +18,7 @@ class ListenerManager:
         listener_class = get_listener_types()[listener_model.type]
         return listener_class.new(
             'http://127.0.0.1:5000',
+            listener_model.id,
             listener_model.bind_host,
             listener_model.bind_port,
             listener_model.sym_key

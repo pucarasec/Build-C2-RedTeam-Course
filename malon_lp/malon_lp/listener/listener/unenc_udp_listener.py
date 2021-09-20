@@ -15,8 +15,8 @@ import socket
 NUMERO_COMPLETAMENTE_ARBITRARIO = 2048
 
 class UdpListener(Listener):
-    def __init__(self, api_url: str, host: str, port: int):
-        handler = ApiHandler(api_url)
+    def __init__(self, api_url: str, listener_id: int, host: str, port: int):
+        handler = ApiHandler(api_url, listener_id)
         handler = DummyAuthHandler(handler)
 
         self._handler = handler
@@ -24,8 +24,8 @@ class UdpListener(Listener):
         self._host = host
     
     @classmethod
-    def new(cls, api_url: str, host: str, port: int, _sym_key: bytes) -> 'Listener':
-        return cls(api_url, host, port)
+    def new(cls, api_url: str, listener_id: int, host: str, port: int, _sym_key: bytes) -> 'Listener':
+        return cls(api_url, listener_id, host, port)
     
     @classmethod
     def type_name(cls) -> str:

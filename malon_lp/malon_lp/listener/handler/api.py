@@ -6,11 +6,13 @@ import json
 import requests
 
 class ApiHandler(AuthHandler):
-    def __init__(self, base_url: str):
+    def __init__(self, base_url: str, listener_id: int):
         self._base_url = base_url
+        self._listener_id = listener_id
     
     def _report_agent(self, client_id: str):
-        requests.post('{}/agents/{}/report'.format(self._base_url, client_id))
+        report = {'listener_id': self._listener_id}
+        requests.post('{}/agents/{}/report'.format(self._base_url, client_id), json=report)
 
     def _handle_get_tasks_msg(self, client_id: str, _msg) -> bytes:
         response = requests.get('{}/agents/{}/tasks/unread/'.format(self._base_url, client_id))

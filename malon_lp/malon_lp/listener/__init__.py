@@ -11,7 +11,7 @@ def _load_submodules():
 class Listener(ABC):
     @classmethod
     @abstractmethod
-    def new(cls, api_url, host: str, port: int, sym_key: bytes) -> 'Listener':
+    def new(cls, api_url: str, listener_id: int, host: str, port: int, sym_key: bytes) -> 'Listener':
         pass
     
     @classmethod

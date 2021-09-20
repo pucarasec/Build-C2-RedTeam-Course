@@ -10,9 +10,11 @@ class Agent(Base):
     __tablename__ = 'agents'
     id = Column(String, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
+    listener_id = Column(Integer, ForeignKey('listeners.id'))
     last_seen_at = Column(DateTime, nullable=False, default=datetime.now)
     last_task_id = Column(Integer, nullable=False, default=0)
     tasks = relationship('Task', back_populates='agent')
+    listener = relationship('Listener', back_populates='agents')
 
 class Task(Base):
     __tablename__ = 'tasks'
@@ -44,6 +46,7 @@ class Listener(Base):
     target_port = Column(Integer, nullable=False)
     connection_interval_ms = Column(Integer, nullable=False, default=1000)
     sym_key = Column(BLOB, nullable=False)
+    agents = relationship('Agent', back_populates='listener')
 
     @validates('sym_key')
     def validate_sym_key(self, _, sym_key):

@@ -8,8 +8,8 @@ from malon_lp.listener.handler.api import ApiHandler
 from malon_lp.crypto.dh import KeyExchange
 
 class UnencryptedHttpListener(Listener):
-    def __init__(self, api_url: str, host: str, port: int):
-        handler = ApiHandler(api_url)
+    def __init__(self, api_url: str, listener_id: int, host: str, port: int):
+        handler = ApiHandler(api_url, listener_id)
         handler = DummyAuthHandler(handler)
 
         self._handler = handler
@@ -17,8 +17,8 @@ class UnencryptedHttpListener(Listener):
         self._port = port
     
     @classmethod
-    def new(cls, api_url: str, host: str, port: int, _sym_key: bytes) -> 'Listener':
-        return cls(api_url, host, port)
+    def new(cls, api_url: str, listener_id: int, host: str, port: int, _sym_key: bytes) -> 'Listener':
+        return cls(api_url, listener_id, host, port)
     
     @classmethod
     def type_name(cls) -> str:
