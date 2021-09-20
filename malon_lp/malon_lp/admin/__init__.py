@@ -52,6 +52,7 @@ def listener(id: int):
 def listener_delete(id: int):
     listener_manager.delete_listener(id)
     Listener.query.filter_by(id=id).delete()
+    db_session.commit()
     return jsonify({'success': True})
 
 @app.route("/listeners/<int:id>/launcher/<platform>", methods=['GET'])
