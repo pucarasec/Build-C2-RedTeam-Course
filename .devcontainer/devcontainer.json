@@ -12,7 +12,7 @@
 			"NODE_VERSION": "lts/*"
 		}
 	},
-	"runArgs": [ "--cap-add=SYS_PTRACE" ],
+	"runArgs": [ "--cap-add=SYS_PTRACE","--network=host"],
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {

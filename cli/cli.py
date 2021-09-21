@@ -2,6 +2,7 @@ import requests
 import time
 import sys
 from base64 import b64decode
+import shlex
 
 if len(sys.argv) < 3:
     print('Usage: {} BASE_URL AGENT_ID'.format(sys.argv[0]))
@@ -11,7 +12,9 @@ base_url, agent_id = sys.argv[1:]
 
 while True:
     command = input(">")
-    command_args = command.split(' ')
+    command_args = shlex.split(command)
+    print('command_args: ', command_args)
+
     response = requests.post(
         "{}/agents/{}/tasks/".format(base_url, agent_id),
         json={
