@@ -16,6 +16,9 @@ class DummyAuthHandler(Handler):
         self._handler = handler
 
     def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
+        """
+            Desencodea el contenido del payload y delega el mensage en el AuthHandler
+        """
         base_msg = json.loads(msg.decode('utf-8'))
         if base_msg.get('client_msg') is not None:
             return self._handler.handle_auth_msg(
