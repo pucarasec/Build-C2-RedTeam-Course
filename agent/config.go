@@ -6,9 +6,6 @@ import (
 	"os"
 )
 
-//go:embed config_placeholder.bin
-var configBytes []byte
-
 type Config struct {
 	PrivateKey []byte `json:"PrivateKey"`
 	SymKey     []byte `json:"SymKey"`
