@@ -31,13 +31,12 @@ class UdpListener(Listener):
         return 'udp'
     
     def run(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind((self._host, self._port))
-        while True:
-            msg, addr = sock.recvfrom(NUMERO_COMPLETAMENTE_ARBITRARIO)
-            print('Received message from: {}'.format(addr))
-            if msg:
-                response_msg = self._handler.handle_msg(msg)
-                sock.sendto(response_msg, addr)
+        """
+            El listener debera adjuntar un socket que soporte comunicacion UDP a una 
+            interfaz IPV4 que recibira por medio del parametro 'host'
+            y un puerto, que sera el parametro 'port'.
+            Debera recibir mensajes de un tamaño arbitrario.
+        """
+        rais NotImplementedError
 
 

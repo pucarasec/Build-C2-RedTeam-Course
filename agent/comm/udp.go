@@ -1,7 +1,6 @@
 package comm
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 )
@@ -23,18 +22,10 @@ func NewUdpClient(targetHost string, targetPort int) (*UdpClient, error) {
 const NUMERO_TOTALMENTE_ARBITRARIO = 2048
 
 func (client *UdpClient) SendMsg(outgoingMsg []byte) ([]byte, error) {
-	bytes_written, err := client.conn.Write(outgoingMsg)
-	if err != nil {
-		return nil, err
-	}
-	if bytes_written < len(outgoingMsg) {
-		return nil, fmt.Errorf("error writing to UDP socket")
-	}
+	// Se debe utilizar la conexion instanciada en la variable 'conn'
+	// para completar un buffer de tamaño NUMERO_TOTALMENTE_ARBITRARIO
+	// y devolver el segmento del buffer correspondiente a la cantidad
+	// de bytes enviados por el Listener
+	return nil, fmt.Errorf("Not Implemented ERROR")
 
-	buffer := make([]byte, NUMERO_TOTALMENTE_ARBITRARIO)
-	bytes_read, err := bufio.NewReader(client.conn).Read(buffer)
-	if err != nil {
-		return nil, err
-	}
-	return buffer[:bytes_read], nil
 }
