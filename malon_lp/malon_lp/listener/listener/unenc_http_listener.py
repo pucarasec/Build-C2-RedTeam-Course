@@ -25,19 +25,13 @@ class UnencryptedHttpListener(Listener):
         return 'unenc-http'
     
     def run(self):
-        # A implementar
-        app = Flask(__name__)
-
-        @app.route('/', methods=["POST"])
-        def root():
-            msg = b64decode(request.form['m'])
-            response_msg = self._handler.handle_msg(msg)
-            return """
-        <html>
-            <head><!--{}--></head>
-            <body>I'm a totally innocent website</body>
-        </html>
-            """.format(b64encode(response_msg).decode('utf-8'))
-
-        app.run(host=self._host, port=self._port)
-
+        """
+            - Es necesario crear una aplicacion de flask la cual exponga unicamente el endpoint "/"
+            y reciba el metodo "POST".
+            - El mismo recibira un mensaje encodeado en base64 dentro de un form bajo la key "m" 
+            - Este mensaje debe ser desencodeado para poder ser procesado por los handlers del Listener.
+            - Finalmente debera devolver la respuesta recibida por los handlers como un string encodeado
+            en base64, dentro de un comentario de HTML
+            - Al terminar la funcion se debe correr la aplicacion en el puerto y host definidos por el Listener
+        """ 
+        raise NotImplementedError

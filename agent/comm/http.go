@@ -20,7 +20,6 @@ func NewHttpClient(targetUrl string) *HttpClient {
 }
 
 func (client *HttpClient) SendMsg(outgoingMsg []byte) ([]byte, error) {
-	// A Implementar
 	encodedOutgoingMsg := base64.StdEncoding.EncodeToString(outgoingMsg)
 	resp, err := http.PostForm(client.targetUrl, url.Values{"m": {string(encodedOutgoingMsg)}})
 
@@ -46,7 +45,6 @@ func (client *HttpClient) SendMsg(outgoingMsg []byte) ([]byte, error) {
 }
 
 func getMsgFromBody(body []byte) ([]byte, error) {
-	// A implementar
 	re := regexp.MustCompile(`(<!--)([A-Za-z0-9/+=]*|=[^=]|={3,})(-->)`)
 	match := re.Find(body)
 	encoded := string(match[4 : len(match)-3])
