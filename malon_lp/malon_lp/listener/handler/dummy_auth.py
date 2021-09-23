@@ -17,15 +17,15 @@ class DummyAuthenticationHandler(Handler):
     def handle_msg(self, msg: bytes, client_id: Optional[str] = None) -> bytes:
         """
             Desencodea el contenido del payload y delega el mensage en el AuthenticatedHandler
+
+            Recibira un mensaje con la siguiente estructura:
+            msg = b'{"client_msg": {"payload": "cHVjYXJhCg==", "client_id":"9927094366ecadea795bc37a32e5e140"}}'
+
+            Y debera devolver un mensaje en bytes de la  forma 
+            b'{"server_msg": {"payload": "cHVjYXJhCg==" } }'
+
+            Pistas:
+                - utilizar la libreria 'json' para deserializar msg 
+                - utilizar la libreria 'b64decode' para desencodear el payload enviado al AuthenticatedHandler
         """
-        base_msg = json.loads(msg.decode('utf-8'))
-        if base_msg.get('client_msg') is not None:
-            payload = self._handler.handle_auth_msg(
-                b64decode(base_msg['client_msg']['payload']),
-                base_msg['client_msg']['client_id']
-            )
-            server_msg = {'payload': b64encode(payload).decode('utf-8')}
-            base_msg = {'server_msg': server_msg}
-            return json.dumps(base_msg).encode('utf-8')
-        else:
-            raise RuntimeError('Unexpected message type')
+        raise NotImplementedError
