@@ -33,30 +33,15 @@ class DHHandler(Handler):
     
     def _handle_client_msg(self, client_id: str, encrypted_payload: bytes) -> bytes:
         """
-            - Obtiene la clave publica del KeyRepository a partir del client_id
-            - Genera la clave compartida
+            - Obtiene la clave publica del KeyRepository a partir del client_id # self._kr.get(client_id)
+            - Genera la clave compartida # self._ke.get_shared_key(pub_key)
             - Verifica y decifra el mensaje con la misma
             - Delega el mensaje en el AuthenticatedHandler para obtener la respuesta para el cliente
-            - La cifra y firma con la clave compartida
-            - Devuelve la respuesta
+            - La cifra y firma la respuesta con la clave compartida
+            - Encodea el payload cifrado en base64
+            - Devuelve la respuesta con el formato  b'{"server_msg": {"payload": "cHVjYXJhCg==" } }'
         """
-        key = self._kr.get(client_id, None)
-        if key is not None:
-            cipher = SymmetricCipher(self._ke.get_shared_key(self._kr[client_id]))
-            payload = cipher.verify_decrypt_msg(encrypted_payload)
-            response = self._handler.handle_auth_msg(payload, client_id)
-            encrypted_response = cipher.encrypt_sign_msg(response)
-            return json.dumps({
-                'server_msg': {
-                    'payload': b64encode(encrypted_response).decode('utf-8')
-                }
-            }).encode('utf-8')
-        else:
-            return json.dumps({
-                'error_msg': {
-                    'type': 'HANDSHAKE_EXPIRED'
-                }
-            }).encode('utf-8')
+        raise NotImplementedError
 
     def handle_msg(self, msg: bytes) -> bytes:
         """

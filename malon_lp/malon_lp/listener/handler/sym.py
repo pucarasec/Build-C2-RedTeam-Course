@@ -16,9 +16,10 @@ class EncryptedHandler(Handler):
     def handle_msg(self, msg: bytes) -> bytes:
         """
             Delega el mensaje descfirado (por la primer capa de criptografia simetrica)
-            en el Handler siguiente
+            en el Handler siguiente.
+
+            - se debe verificar y descifrar el mensaje
+            - delegar el mensaje al Handler siguiente
+            - finalmente se debe cifrar y firmar el mensaje, para poder devolverlo
         """
-        decrypted_msg = self._cipher.verify_decrypt_msg(msg)
-        response_msg = self._handler.handle_msg(decrypted_msg)
-        encrypted_response_msg = self._cipher.encrypt_sign_msg(response_msg)
-        return encrypted_response_msg
+        raise NotImplementedError
