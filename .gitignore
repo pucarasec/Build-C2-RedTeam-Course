@@ -1,6 +1,6 @@
 __pycache__
 *.pyc
 *.egg-info
-go/agent/build
-go/lp/lp
-go/lp/test.db
+agent/build
+malon_lp/malon.db
+malon_lp/render_launcher
