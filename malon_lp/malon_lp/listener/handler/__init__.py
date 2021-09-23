@@ -15,7 +15,7 @@ class Handler(ABC):
         """
         pass
 
-class AuthHandler(ABC):
+class AuthenticatedHandler(ABC):
     @abstractmethod
     def handle_auth_msg(self, msg: bytes, client_id: str):      
         """

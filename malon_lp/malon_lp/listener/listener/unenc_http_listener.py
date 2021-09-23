@@ -2,7 +2,7 @@ from flask import Flask, request
 from base64 import b64decode, b64encode
 
 from malon_lp.listener import Listener
-from malon_lp.listener.handler.dummy_auth import DummyAuthHandler
+from malon_lp.listener.handler.dummy_auth import DummyAuthenticationHandler
 from malon_lp.listener.handler.api import ApiHandler
 
 from malon_lp.crypto.dh import KeyExchange
@@ -10,7 +10,7 @@ from malon_lp.crypto.dh import KeyExchange
 class UnencryptedHttpListener(Listener):
     def __init__(self, api_url: str, listener_id: int, host: str, port: int):
         handler = ApiHandler(api_url, listener_id)
-        handler = DummyAuthHandler(handler)
+        handler = DummyAuthenticationHandler(handler)
 
         self._handler = handler
         self._host = host

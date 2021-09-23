@@ -1,11 +1,11 @@
 from typing import NamedTuple, Optional
 
-from . import AuthHandler
+from . import AuthenticatedHandler
 
 import json
 import requests
 
-class ApiHandler(AuthHandler):
+class ApiHandler(AuthenticatedHandler):
     def __init__(self, base_url: str, listener_id: int):
         self._base_url = base_url
         self._listener_id = listener_id

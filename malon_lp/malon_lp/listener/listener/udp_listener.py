@@ -6,8 +6,6 @@ from malon_lp.listener.handler.sym import EncryptedHandler
 from malon_lp.listener.handler.dh import DHHandler
 from malon_lp.listener.handler.api import ApiHandler
 
-from malon_lp.listener.handler.dummy_auth import DummyAuthHandler
-
 from malon_lp.crypto.dh import KeyExchange
 
 import socket
