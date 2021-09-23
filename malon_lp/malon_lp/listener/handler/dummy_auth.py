@@ -20,9 +20,12 @@ class DummyAuthenticationHandler(Handler):
         """
         base_msg = json.loads(msg.decode('utf-8'))
         if base_msg.get('client_msg') is not None:
-            return self._handler.handle_auth_msg(
+            payload = self._handler.handle_auth_msg(
                 b64decode(base_msg['client_msg']['payload']),
                 base_msg['client_msg']['client_id']
             )
+            server_msg = {'payload': b64encode(payload).decode('utf-8')}
+            base_msg = {'server_msg': server_msg}
+            return json.dumps(base_msg).encode('utf-8')
         else:
             raise RuntimeError('Unexpected message type')

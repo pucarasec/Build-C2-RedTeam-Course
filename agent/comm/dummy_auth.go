@@ -22,6 +22,8 @@ func (c *DummyAuthClient) GetClientID() []byte {
 }
 
 func (c *DummyAuthClient) SendMsg(msg []byte) ([]byte, error) {
+	var responseBaseMsg BaseMsg
+
 	clientMsg := BaseMsg{
 		ClientMsg: &ClientMsg{
 			ClientID: hex.EncodeToString(c.clientID),
@@ -38,6 +40,10 @@ func (c *DummyAuthClient) SendMsg(msg []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = json.Unmarshal(response, &responseBaseMsg)
+	if err != nil {
+		return nil, err
+	}
 
-	return response, nil
+	return responseBaseMsg.ServerMsg.Payload, nil
 }
