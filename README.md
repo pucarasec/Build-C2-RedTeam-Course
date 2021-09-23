@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="https://app.gitbook.com/@zuthaka/s/malware-crash-course/">
-    <img src="malon_logo.png" alt="Logo" width="790" height="215">
+    <img src="malon_logo.png" alt="Logo">
   </a>
   <br />
 
