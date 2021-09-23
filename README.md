@@ -1,5 +1,5 @@
 # Malware Crash Course
-
+<br />
 <div align="center">
   <a href="https://app.gitbook.com/@zuthaka/s/malware-crash-course/">
     <img src="malon_logo.png" alt="Logo">
@@ -18,48 +18,17 @@
 <p align="center">
 
   <p align="center">
-A collaborative free open-source Command & Control integration framework that allows developers to concentrate on the core function and goal of their C2.
+Material para el curso de Malware Crash Course de Ekoparty 2021    
     <br />
-    <a href="https://docs.zuthaka.com/"><strong>Explore the docs »</strong></a>
+    <a href="https://zuthaka.gitbook.io/malware-crash-course/-Mft1n0MUS-3aZs8p661/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <!--<a href="https://youtbe.com">View Demo</a> -->
-    ·
-    <a href="https://github.com/pucarasec/zuthaka/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/pucarasec/zuthaka/issues">Request Feature</a>
-    ·
   </p>
 </p>
 
+## Descripcion
 
-
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#problem-statement">Problem statement</a></li>
-        <li><a href="#solution">Solution</a></li>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li><a href="#already-supported-c2">Already Supported C2</a></li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
+Dentro de la seguridad ofensiva actual, los Command and Control (C2) se convirtieron en una pieza fundamental para cualquier operación que realice un equipo de Red Team o mismo en la ejecución de ejercicios de Advanced Adversary Simulations. Dado que el mercado de los C2 ha crecido enormemente en el último tiempo y que cada uno de ellos tienen sus propias características, tanto desde la perspectiva de un operador de Red Team en relación a sus escenarios y operaciones, como desde la perspectiva de un operador de Blue Team quien necesita entender en profundidad el funcionamiento para defender mejor también, es importante conocer en detalle los conceptos y la infraestructura que existe detrás de los mismos. Este curso le brindará a los estudiantes el conocimiento y las herramientas necesarias para poder entender los fundamentos de la arquitectura correspondiente a los C2, para así luego poder interpretar funcionalidades de los diferentes command and controls (C2) existentes del mercado, en dónde además se trabajará con el proyecto de la "Command and Control Matrix". Luego una vez entendida esta fase se trabajará a lo largo del curso en desarrollar desde absolutamente cero un Command and Control (C2) propio. El C2 que realizaremos en el curso será en Python con un Implamante en GO , aplicaremos criptografía (Diffie-Hellman Key Exchange) para encriptar y autenticar el canal de comunicación entre implante y listener. También les otorgaremos las herramientas para poder integrar el C2 realizado de cero en el curso (O mismo cualquiera que alumno seleccione de la command and control matrix (C2 Matrix ) a Zuthaka , el cual es un framework de desarrollo de C2 colaborativo y open-source que permite a los desarrolladores concentrarse en las funcionalidades cores de su command and control (C2). El framework Zuthaka fué desarrollado por la empresa Pucara Information Security, y el mismo fue presentado en el espacio "Arsenal" de la reconocida conferencia de BlackHat y en el espacio de Demo Labs de DEFCON. El presente curso será dictado por los creadores de "Zuthaka" quienes tienen una amplia experiencia en el tema tanto local como en el mercado internacional. Finalmente, se trabajará con los participantes en todo lo relacionado a técnicas efectivas para evitar la detección del ejecutable y todo lo relacionado a la evasión en disco y ejecución en memoria. 
 
 ## License
 
