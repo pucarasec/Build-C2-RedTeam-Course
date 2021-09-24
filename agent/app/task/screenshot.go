@@ -1,12 +1,14 @@
 //go:build linux || windows
 
-package app
+package task
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"image/png"
+
+	"../proto"
 
 	"github.com/kbinani/screenshot"
 )
@@ -22,7 +24,9 @@ type ScreenshotResultInfo struct {
 	ErrorDesc    string `json:"error_desc,omitempty"`
 }
 
-func handleScreenshotTask(task Task) TaskResult {
+type ScreenshotTaskHandler struct{}
+
+func (*ScreenshotTaskHandler) HandleTask(task proto.Task) proto.TaskResult {
 	var screenshotInfo ScreenshotInfo
 
 	json.Unmarshal(task.Info, &screenshotInfo)
@@ -36,7 +40,7 @@ func handleScreenshotTask(task Task) TaskResult {
 			Success:      true,
 		}
 		screenshotResultInfoJson, _ := json.Marshal(screenshotResultInfo)
-		return TaskResult{
+		return proto.TaskResult{
 			TaskId: task.Id,
 			Info:   screenshotResultInfoJson,
 			Output: nil,
@@ -52,7 +56,7 @@ func handleScreenshotTask(task Task) TaskResult {
 				ErrorDesc:    fmt.Sprintf("%s", err),
 			}
 			screenshotResultInfoJson, _ := json.Marshal(screenshotResultInfo)
-			return TaskResult{
+			return proto.TaskResult{
 				TaskId: task.Id,
 				Info:   screenshotResultInfoJson,
 				Output: nil,
@@ -68,7 +72,7 @@ func handleScreenshotTask(task Task) TaskResult {
 			Success:      true,
 		}
 		screenshotResultInfoJson, _ := json.Marshal(screenshotResultInfo)
-		return TaskResult{
+		return proto.TaskResult{
 			TaskId: task.Id,
 			Info:   screenshotResultInfoJson,
 			Output: buffer.Bytes(),

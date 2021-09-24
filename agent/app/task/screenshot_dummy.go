@@ -1,8 +1,12 @@
 //go:build !windows && !linux
 
-package app
+package task
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"../proto"
+)
 
 type ScreenshotResultInfo struct {
 	DisplayCount int    `json:"display_count"`
@@ -11,7 +15,9 @@ type ScreenshotResultInfo struct {
 	ErrorDesc    string `json:"error_desc,omitempty"`
 }
 
-func handleScreenshotTask(task Task) TaskResult {
+type ScreenshotTaskHandler struct{}
+
+func (*ScreenshotTaskHandler) HandleTask(task proto.Task) proto.TaskResult {
 	screenshotResultInfo := ScreenshotResultInfo{
 		DisplayCount: 0,
 		Display:      -1,
@@ -19,7 +25,7 @@ func handleScreenshotTask(task Task) TaskResult {
 		ErrorDesc:    "screenshots not supported in this OS",
 	}
 	screenshotResultInfoJson, _ := json.Marshal(screenshotResultInfo)
-	return TaskResult{
+	return proto.TaskResult{
 		TaskId: task.Id,
 		Info:   screenshotResultInfoJson,
 		Output: nil,

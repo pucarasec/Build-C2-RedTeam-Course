@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 
 	"../comm"
+	"./proto"
+	"./task"
 )
 
 type Agent struct {
@@ -14,8 +16,8 @@ func NewAgent(client comm.Client) *Agent {
 	return &Agent{client: client}
 }
 
-func (a *Agent) sendMsg(agentMsg *AgentMsg) (*LPMsg, error) {
-	var lpMsg LPMsg
+func (a *Agent) sendMsg(agentMsg *proto.AgentMsg) (*proto.LPMsg, error) {
+	var lpMsg proto.LPMsg
 	msg, err := json.Marshal(agentMsg)
 	if err != nil {
 		return nil, err
@@ -32,31 +34,24 @@ func (a *Agent) sendMsg(agentMsg *AgentMsg) (*LPMsg, error) {
 }
 
 func (a *Agent) Heartbeat() error {
-	agentMsg := &AgentMsg{
-		GetTasksMsg: &GetTasksMsg{},
+	agentMsg := &proto.AgentMsg{
+		GetTasksMsg: &proto.GetTasksMsg{},
 	}
 	lpMsg, err := a.sendMsg(agentMsg)
 	if err != nil {
 		return err
 	}
 	if taskLisgMsg := lpMsg.TaskListMsg; taskLisgMsg != nil {
-		var taskResults []TaskResult
-		for _, task := range taskLisgMsg.Tasks {
-			var taskResult TaskResult
-			switch task.Type {
-			case "command":
-				taskResult = handleCommandTask(task)
-			case "file":
-				taskResult = handleFileTask(task)
-			case "screenshot":
-				taskResult = handleScreenshotTask(task)
-			}
-			taskResults = append(taskResults, taskResult)
+		var results []proto.TaskResult
+		for _, t := range taskLisgMsg.Tasks {
+			taskHandler, _ := task.GetTaskHandler(t)
+			result := taskHandler.HandleTask(t)
+			results = append(results, result)
 		}
-		if len(taskResults) > 0 {
-			agentMsg := &AgentMsg{
-				TaskResultsMsg: &TaskResultsMsg{
-					Results: taskResults,
+		if len(results) > 0 {
+			agentMsg := &proto.AgentMsg{
+				TaskResultsMsg: &proto.TaskResultsMsg{
+					Results: results,
 				},
 			}
 

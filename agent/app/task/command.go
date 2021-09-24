@@ -1,4 +1,4 @@
-package app
+package task
 
 import (
 	"bytes"
@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"time"
+
+	"../proto"
 )
 
 type CommandInfo struct {
@@ -69,7 +71,9 @@ func runCommand(cmd Command) CommandResult {
 	return cmdResult
 }
 
-func handleCommandTask(task Task) TaskResult {
+type CommandTaskHandler struct{}
+
+func (*CommandTaskHandler) HandleTask(task proto.Task) proto.TaskResult {
 	var cmdInfo CommandInfo
 	json.Unmarshal(task.Info, &cmdInfo)
 	cmd := Command{
@@ -84,7 +88,7 @@ func handleCommandTask(task Task) TaskResult {
 	}
 	cmdResultInfoJson, _ := json.Marshal(cmdResultInfo)
 	output := append(cmdResult.Stderr, cmdResult.Stdout...)
-	return TaskResult{
+	return proto.TaskResult{
 		TaskId: task.Id,
 		Info:   cmdResultInfoJson,
 		Output: output,

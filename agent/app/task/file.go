@@ -1,9 +1,11 @@
-package app
+package task
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"../proto"
 )
 
 type FileInfo struct {
@@ -16,7 +18,9 @@ type FileResultInfo struct {
 	ErrorDesc string `json:"error_desc,omitempty"`
 }
 
-func handleFileTask(task Task) TaskResult {
+type FileTaskHandler struct{}
+
+func (*FileTaskHandler) HandleTask(task proto.Task) proto.TaskResult {
 	var fileInfo FileInfo
 	json.Unmarshal(task.Info, &fileInfo)
 
@@ -47,7 +51,7 @@ func handleFileTask(task Task) TaskResult {
 
 	fileResultInfoJson, _ := json.Marshal(fileResultInfo)
 
-	return TaskResult{
+	return proto.TaskResult{
 		TaskId: task.Id,
 		Info:   fileResultInfoJson,
 		Output: fileData,
