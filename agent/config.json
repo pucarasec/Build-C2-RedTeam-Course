@@ -1,8 +1,8 @@
 {
     "Type": "http",
-    "Host": "localhost",
+    "Host": "127.0.0.1",
     "Port": 8080,
-    "IntervalMs": 1000,
+    "IntervalMs": 10000,
     "SymKey": "c29tZSByYW5kb20ga2V5IQ==",
     "PrivateKey": "MHcCAQEEIJMEryLZTSdAbPIB6O97EfJiFk9hB4vHlxTA7owhZMYooAoGCCqGSM49AwEHoUQDQgAEeRmw2DbQa4WbcEm8GIjDyOqQQrgpoDdOJGh+FpZTf9QLpq4TqsgVcEHWTVo3Fs1X0vfuCyK887t+sDCMpYxMxw=="
 }
