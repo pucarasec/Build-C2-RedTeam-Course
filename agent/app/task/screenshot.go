@@ -13,17 +13,23 @@ import (
 	"github.com/kbinani/screenshot"
 )
 
+// ScreenshotInfo
+// JSON en Task.Info
 type ScreenshotInfo struct {
-	Display int `json:"display"`
+	Display int `json:"display"` // display a tomar screenshot. valores negativos no tienen efecto y devuelven la cantidad de displays
 }
 
+// ScreenshotResultInfo
+// JSON en TaskResult.Info
 type ScreenshotResultInfo struct {
-	DisplayCount int    `json:"display_count"`
-	Display      int    `json:"selected_display"`
-	Success      bool   `json:"success"`
-	ErrorDesc    string `json:"error_desc,omitempty"`
+	DisplayCount int    `json:"display_count"`        // cantidad de displays del sistema
+	Display      int    `json:"selected_display"`     // display seleccionado para tomar screenshot
+	Success      bool   `json:"success"`              // tuvo exito?
+	ErrorDesc    string `json:"error_desc,omitempty"` // descripcion del error en caso de fallar
 }
 
+// ScreenshotTaskHandler maneja una tarea del tipo screenshot
+// Toma un screenshot utilizando la libreria "github.com/kbinani/screenshot"
 type ScreenshotTaskHandler struct{}
 
 func (*ScreenshotTaskHandler) HandleTask(task proto.Task) proto.TaskResult {
