@@ -131,8 +131,18 @@ def agent_tasks_post(agent_id: str):
 
 @app.route("/agents/<agent_id>/tasks/<int:task_id>/result", methods=['GET'])
 def agent_task_result(agent_id: str, task_id: int):
-    task_result = TaskResult.query.filter_by(task_id=task_id).all()
+    task_result = TaskResult.query.filter_by(task_id=task_id).first()
     return jsonify(task_result)
+
+@app.route("/agents/<agent_id>/tasks/<int:task_id>/output", methods=['GET'])
+def agent_task_result_output(agent_id: str, task_id: int):
+    task_result = TaskResult.query.filter_by(task_id=task_id).first()
+    return send_file(
+        io.BytesIO(task_result.output),
+        mimetype='application/octet-stream',
+        as_attachment=True,
+        attachment_filename='task-{}-output'.format(task_result.task_id)
+    )
 
 @app.route("/agents/<agent_id>/tasks/<int:task_id>/result", methods=['POST'])
 def agent_task_result_post(agent_id: str, task_id: int):
