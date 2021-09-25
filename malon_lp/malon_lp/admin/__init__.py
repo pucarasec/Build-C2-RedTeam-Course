@@ -131,7 +131,7 @@ def agent_tasks_post(agent_id: str):
 
 @app.route("/agents/<agent_id>/tasks/<int:task_id>/result", methods=['GET'])
 def agent_task_result(agent_id: str, task_id: int):
-    task_result = TaskResult.query.filter_by(task_id=task_id).first()
+    task_result = TaskResult.query.filter_by(task_id=task_id).all()
     return jsonify(task_result)
 
 @app.route("/agents/<agent_id>/tasks/<int:task_id>/output", methods=['GET'])
